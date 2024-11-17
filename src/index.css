@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: "Rubik", serif;
+}
+
+input,
+select,
+textarea {
+  @apply border border-gray-500 outline-none;
+}
+
+.main-bg {
+  background: 
+    linear-gradient(180deg, rgba(33, 35, 34, 0.5) 100%, rgba(23, 24, 24, 0) 100%), 
+    linear-gradient(360deg, #171818 10%, rgba(23, 24, 24, 0) 80%),
+    url('/auth-bg.jpg') center/cover no-repeat;
+  z-index: 1;
+  /* -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; */
+}
