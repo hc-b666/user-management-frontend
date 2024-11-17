@@ -2,6 +2,8 @@ import { toast } from "react-toastify";
 import { BACKEND_URL } from "./constants";
 import { NavigateFunction } from "react-router-dom";
 
+console.log(BACKEND_URL);
+
 export const signIn = async (data: any, navigate: NavigateFunction) => {
   try {
     const res = await fetch(`${BACKEND_URL}/api/login`, {
