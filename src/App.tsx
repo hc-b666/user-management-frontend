@@ -10,7 +10,7 @@ function App() {
   const { state } = useLoading();
 
   return (
-    <main className="main-bg w-full h-screen pb-20 flex flex-col items-start gap-20 absolute top-0 left-0">
+    <main className="main-bg w-full h-screen lg:pb-20 flex flex-col items-start lg:gap-20">
       <Navbar />
       <Routes>
         <Route path="/" element={<PrivateRoute />}>

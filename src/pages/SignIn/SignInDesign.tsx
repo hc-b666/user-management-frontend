@@ -9,7 +9,7 @@ interface SignInDesignProps {
 
 export function SignInDesign({ handleSubmit }: SignInDesignProps) {
   return (
-    <div className="mx-auto w-[1440px] h-full grid grid-cols-2 gap-40">
+    <div className="auth-page">
       <p className="text-white absolute bottom-10 left-10">
         Don't have an account?{" "}
         <NavLink to="/auth/register" className="text-blue-500 underline">
@@ -17,9 +17,9 @@ export function SignInDesign({ handleSubmit }: SignInDesignProps) {
         </NavLink>
       </p>
 
-      <div className="col-span-1 flex flex-col bg-white rounded-xl py-8 px-10 mt-20 mx-20 mb-48">
-        <h4 className="text-xl font-light">Start your journey</h4>
-        <h2 className="text-3xl font-bold">Sign In to the Arcane</h2>
+      <div className="auth-form-wrapper">
+        <h4 className="text-lg lg:text-xl font-light">Start your journey</h4>
+        <h2 className="text-2xl lg:text-3xl font-bold">Sign In to the Arcane</h2>
 
         <form onSubmit={handleSubmit} className="mt-10 flex flex-col gap-5">
           <Input

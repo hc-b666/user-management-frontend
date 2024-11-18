@@ -1,22 +1,25 @@
 import { useState, useEffect, useCallback } from "react";
-// import { useNavigate } from "react-router-dom";
 import { DashboardDesign } from "./DashboardDesign";
 import { getUsers } from "@/services";
-import { debounce } from "lodash"; 
+import { debounce } from "lodash";
 import { useLoading } from "@/contexts/LoadingContext";
 
 export function Dashboard() {
-  // const navigate = useNavigate();
   const { dispatch } = useLoading();
   const [users, setUsers] = useState<User[]>([]);
   const [originalUsers, setOriginalUsers] = useState<User[]>([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [checkedUsers, setCheckedUsers] = useState<number[]>([]);
 
-  useEffect(() => {
+  const refetchUsers = () => {
     getUsers(setUsers, dispatch);
     getUsers(setOriginalUsers, dispatch);
-  }, [checkedUsers]);
+    setCheckedUsers([]);
+  };
+
+  useEffect(() => {
+    refetchUsers();
+  }, []);
 
   const handleFilter = useCallback(
     debounce((search: string) => {
@@ -24,14 +27,14 @@ export function Dashboard() {
         setUsers(originalUsers);
       } else {
         setUsers((prev) => {
-          const filteredUsers = prev.filter(u => {
+          const filteredUsers = prev.filter((u) => {
             return u.username.toLowerCase().includes(search);
           });
           return filteredUsers;
         });
       }
     }, 300),
-    [originalUsers]
+    [originalUsers, dispatch]
   );
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,6 +65,15 @@ export function Dashboard() {
     });
   };
 
+  const handleSelectAll = () => {
+    if (checkedUsers.length === users.length) {
+      setCheckedUsers([]);
+    } else {
+      const userIds = users.map((user) => user.id);
+      setCheckedUsers(userIds);
+    }
+  };
+
   return (
     <DashboardDesign
       handleSortLastSeen={handleSortLastSeen}
@@ -69,6 +81,8 @@ export function Dashboard() {
       handleSearch={handleSearch}
       users={users}
       checkedUsers={checkedUsers}
+      refetchUsers={refetchUsers}
+      handleSelectAll={handleSelectAll}
     />
   );
 }

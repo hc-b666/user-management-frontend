@@ -103,7 +103,8 @@ export const handleAction = async (
   action: string,
   method: "GET" | "POST" | "PUT" | "DELETE",
   data: any,
-  dispatch: React.Dispatch<LoadingAction>
+  dispatch: React.Dispatch<LoadingAction>,
+  callback: () => void
 ) => {
   const token = localStorage.getItem("token");
   try {
@@ -120,6 +121,7 @@ export const handleAction = async (
     if (res.ok) {
       const json = await res.json();
       toast.success(json);
+      callback();
     } else if (res.status === 401) {
       localStorage.removeItem("token");
       toast.error("Unauthorized. Please log in again.");

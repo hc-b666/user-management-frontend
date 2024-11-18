@@ -20,10 +20,7 @@ export function TableRowDesign(props: TableRowDesignProps) {
   } = props;
 
   return (
-    <div
-      key={user.email}
-      className="w-full text-black hover:text-gray-500 duration-300 cursor-pointer font-base grid grid-cols-10 gap-3 py-4 border-b border-slate-300"
-    >
+    <div key={user.email} className="table-body-row">
       <div className="col-span-1 px-4">
         <input
           type="checkbox"
@@ -43,7 +40,7 @@ export function TableRowDesign(props: TableRowDesignProps) {
           {lastSeen}
 
           {isHovered && (
-            <div className="absolute top-[125%] left-1/2 -translate-x-1/2 whitespace-nowrap bg-black text-white rounded-md py-1 px-2 z-10">
+            <div className="hover-wrap">
               <p>{hoverText}</p>
             </div>
           )}
