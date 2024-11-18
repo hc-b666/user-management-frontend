@@ -4,18 +4,20 @@ import ChevronIcon from "@/icons/ChevronIcon";
 import LockIcon from "@/icons/LockIcon";
 import LockOpenIcon from "@/icons/LockOpenIcon";
 import TrashIcon from "@/icons/TrashIcon";
+import { useLoading } from "@/contexts/LoadingContext";
 
 interface DashboardDesignProps {
   handleSortLastSeen: () => void;
   handleCheck: (id: number) => void;
-  handleFilter: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
   users: User[];
   checkedUsers: number[];
 }
 
 export function DashboardDesign(props: DashboardDesignProps) {
-  const { handleSortLastSeen, handleCheck, handleFilter, users, checkedUsers } =
+  const { handleSortLastSeen, handleCheck, handleSearch, users, checkedUsers } =
     props;
+  const { dispatch } = useLoading();
 
   return (
     <div className="bg-white p-8 mx-auto w-[1440px] h-full flex flex-col rounded-lg">
@@ -23,7 +25,7 @@ export function DashboardDesign(props: DashboardDesignProps) {
         <div className="flex items-center gap-2">
           <button
             onClick={() =>
-              handleAction("block", "PUT", { userIds: checkedUsers })
+              handleAction("block", "PUT", { userIds: checkedUsers }, dispatch)
             }
             className="text-blue-500 font-medium flex items-center gap-1 border-2 border-blue-500 py-2 px-4 rounded-md"
           >
@@ -32,7 +34,7 @@ export function DashboardDesign(props: DashboardDesignProps) {
           </button>
           <button
             onClick={() =>
-              handleAction("unblock", "PUT", { userIds: checkedUsers })
+              handleAction("unblock", "PUT", { userIds: checkedUsers }, dispatch)
             }
             className="text-blue-500 font-medium flex items-center gap-1 border-2 border-blue-500 py-2 px-4 rounded-md"
           >
@@ -41,7 +43,7 @@ export function DashboardDesign(props: DashboardDesignProps) {
           </button>
           <button
             onClick={() =>
-              handleAction("delete", "DELETE", { userIds: checkedUsers })
+              handleAction("delete", "DELETE", { userIds: checkedUsers }, dispatch)
             }
             className="text-red-500 border-2 border-red-500 p-2 rounded-md"
           >
@@ -55,7 +57,7 @@ export function DashboardDesign(props: DashboardDesignProps) {
             type="search"
             placeholder="Filter"
             className="py-2 px-3 w-80 rounded-md bg-white border border-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-700"
-            onChange={handleFilter}
+            onChange={handleSearch}
           />
         </div>
       </div>

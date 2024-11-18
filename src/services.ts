@@ -1,9 +1,15 @@
 import { toast } from "react-toastify";
 import { BACKEND_URL } from "./constants";
 import { NavigateFunction } from "react-router-dom";
+import { LoadingAction } from "@/reducers/loadingReducer";
 
-export const signIn = async (data: any, navigate: NavigateFunction) => {
+export const signIn = async (
+  data: any,
+  navigate: NavigateFunction,
+  dispatch: React.Dispatch<LoadingAction>
+) => {
   try {
+    dispatch({ type: "START_LOADING" });
     const res = await fetch(`${BACKEND_URL}/api/login`, {
       method: "POST",
       headers: {
@@ -15,20 +21,27 @@ export const signIn = async (data: any, navigate: NavigateFunction) => {
     const json = await res.json();
     if (res.ok) {
       localStorage.setItem("token", json.token);
-      toast("Logged in successfully");
+      toast.success("Logged in successfully");
       navigate("/");
     } else {
       toast(json);
       console.log(`error: ${res}`);
     }
   } catch (err) {
-    toast("Something went wrong. Try again later.");
+    toast.error("Something went wrong. Try again later.");
     console.log(err);
+  } finally {
+    dispatch({ type: "STOP_LOADING" });
   }
 };
 
-export const signUp = async (data: any, navigate: NavigateFunction) => {
+export const signUp = async (
+  data: any,
+  navigate: NavigateFunction,
+  dispatch: React.Dispatch<LoadingAction>
+) => {
   try {
+    dispatch({ type: "START_LOADING" });
     const res = await fetch(`${BACKEND_URL}/api/register`, {
       method: "POST",
       headers: {
@@ -39,49 +52,62 @@ export const signUp = async (data: any, navigate: NavigateFunction) => {
 
     const json = await res.json();
     if (res.ok) {
-      toast("Registered successfully");
+      toast.success("Registered successfully");
       navigate("/auth/signin");
     } else {
-      toast(json);
+      toast.error(json);
       console.log(`error: ${json}`);
     }
   } catch (err) {
     console.log(err);
+  } finally {
+    dispatch({ type: "STOP_LOADING" });
   }
 };
 
 export const getUsers = async (
-  setUsers: React.Dispatch<React.SetStateAction<User[]>>
+  setUsers: React.Dispatch<React.SetStateAction<User[]>>,
+  dispatch: React.Dispatch<LoadingAction>
 ) => {
   const token = localStorage.getItem("token");
   try {
+    dispatch({ type: "START_LOADING" });
+
     const res = await fetch(`${BACKEND_URL}/api/users`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
     });
 
-    const json = await res.json();
     if (res.ok) {
+      const json = await res.json();
       setUsers(json);
+    } else if (res.status === 401) {
+      localStorage.removeItem("token");
+      toast.error("Unauthorized. Please log in again.");
     } else {
-      toast("Error fetching users");
-      // localStorage.removeItem("token");
-      // navigate("/auth/signin");
+      const errorText = await res.text();
+      console.log("Error Response:", errorText);
+      toast.error("Error fetching users");
     }
   } catch (err) {
-    console.log(`error: ${err}`);
+    console.error("Error:", err);
+  } finally {
+    dispatch({ type: "STOP_LOADING" });
   }
 };
 
 export const handleAction = async (
   action: string,
   method: "GET" | "POST" | "PUT" | "DELETE",
-  data: any
+  data: any,
+  dispatch: React.Dispatch<LoadingAction>
 ) => {
   const token = localStorage.getItem("token");
   try {
+    dispatch({ type: "START_LOADING" });
     const res = await fetch(`${BACKEND_URL}/api/${action}`, {
       method,
       headers: {
@@ -91,15 +117,18 @@ export const handleAction = async (
       body: JSON.stringify(data),
     });
 
-    const json = await res.json();
     if (res.ok) {
-      toast(json);
+      const json = await res.json();
+      toast.success(json);
+    } else if (res.status === 401) {
+      localStorage.removeItem("token");
+      toast.error("Unauthorized. Please log in again.");
     } else {
-      toast(json);
-      // localStorage.removeItem("token");
-      // navigate("/auth/signin");
+      toast.error("Error performing action");
     }
   } catch (err) {
     console.log(`error: ${err}`);
+  } finally {
+    dispatch({ type: "STOP_LOADING" });
   }
 };

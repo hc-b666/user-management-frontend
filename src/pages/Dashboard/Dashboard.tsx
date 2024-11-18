@@ -1,19 +1,43 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 // import { useNavigate } from "react-router-dom";
 import { DashboardDesign } from "./DashboardDesign";
 import { getUsers } from "@/services";
+import { debounce } from "lodash"; 
+import { useLoading } from "@/contexts/LoadingContext";
 
 export function Dashboard() {
   // const navigate = useNavigate();
+  const { dispatch } = useLoading();
   const [users, setUsers] = useState<User[]>([]);
   const [originalUsers, setOriginalUsers] = useState<User[]>([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [checkedUsers, setCheckedUsers] = useState<number[]>([]);
 
   useEffect(() => {
-    getUsers(setUsers);
-    getUsers(setOriginalUsers);
+    getUsers(setUsers, dispatch);
+    getUsers(setOriginalUsers, dispatch);
   }, [checkedUsers]);
+
+  const handleFilter = useCallback(
+    debounce((search: string) => {
+      if (search === "") {
+        setUsers(originalUsers);
+      } else {
+        setUsers((prev) => {
+          const filteredUsers = prev.filter(u => {
+            return u.username.toLowerCase().includes(search);
+          });
+          return filteredUsers;
+        });
+      }
+    }, 300),
+    [originalUsers]
+  );
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const search = e.target.value;
+    handleFilter(search);
+  };
 
   const handleSortLastSeen = () => {
     setUsers((prev) => {
@@ -38,26 +62,11 @@ export function Dashboard() {
     });
   };
 
-  const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const search = e.target.value.toLowerCase();
-
-    if (search === "") {
-      setUsers(originalUsers);
-    } else {
-      setUsers((prev) => {
-        const filteredUsers = prev.filter((user) => {
-          return user.username.toLowerCase().includes(search);
-        });
-        return filteredUsers;
-      });
-    }
-  };
-
   return (
     <DashboardDesign
       handleSortLastSeen={handleSortLastSeen}
       handleCheck={handleCheck}
-      handleFilter={handleFilter}
+      handleSearch={handleSearch}
       users={users}
       checkedUsers={checkedUsers}
     />
