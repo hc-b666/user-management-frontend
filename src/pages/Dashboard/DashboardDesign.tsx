@@ -28,6 +28,8 @@ export function DashboardDesign(props: DashboardDesignProps) {
   } = props;
   const { dispatch } = useLoading();
 
+  console.log(checkedUsers);
+
   return (
     <div className="dashboard-page">
       <div className="dashboard-nav">
@@ -35,7 +37,7 @@ export function DashboardDesign(props: DashboardDesignProps) {
           <button
             onClick={() =>
               handleAction(
-                "block",
+                "/dashboard/blockUsers",
                 "PUT",
                 { userIds: checkedUsers },
                 dispatch,
@@ -50,7 +52,7 @@ export function DashboardDesign(props: DashboardDesignProps) {
           <button
             onClick={() =>
               handleAction(
-                "unblock",
+                "/dashboard/unblockUsers",
                 "PUT",
                 { userIds: checkedUsers },
                 dispatch,
@@ -65,7 +67,7 @@ export function DashboardDesign(props: DashboardDesignProps) {
           <button
             onClick={() =>
               handleAction(
-                "delete",
+                "/dashboard/deleteUsers",
                 "DELETE",
                 { userIds: checkedUsers },
                 dispatch,
@@ -87,7 +89,7 @@ export function DashboardDesign(props: DashboardDesignProps) {
         />
       </div>
 
-      <div className="w-full px-3 py-5 rounded-md">
+      <div className="w-full flex flex-col px-3 py-5 rounded-md overflow-hidden">
         <div className="w-full overflow-x-auto scrollbar-hide">
           <div className="table-head-wrap">
             <div className="col-span-1 px-4">
@@ -103,14 +105,16 @@ export function DashboardDesign(props: DashboardDesignProps) {
             </div>
           </div>
 
-          {users.map((user) => (
-            <TableRow
-              key={user.id}
-              user={user}
-              handleCheck={handleCheck}
-              isChecked={checkedUsers.includes(user.id)}
-            />
-          ))}
+          <div className="w-full flex-grow">
+            {users.map((user) => (
+              <TableRow
+                key={user._id}
+                user={user}
+                handleCheck={handleCheck}
+                checkedUsers={checkedUsers}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

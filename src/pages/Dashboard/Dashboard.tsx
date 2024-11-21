@@ -69,8 +69,7 @@ export function Dashboard() {
     if (checkedUsers.length === users.length) {
       setCheckedUsers([]);
     } else {
-      const userIds = users.map((user) => user.id);
-      setCheckedUsers(userIds);
+      setCheckedUsers(users.map(u => u._id));
     }
   };
 

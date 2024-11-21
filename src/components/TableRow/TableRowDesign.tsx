@@ -40,9 +40,9 @@ export function TableRowDesign(props: TableRowDesignProps) {
           {lastSeen}
 
           {isHovered && (
-            <div className="hover-wrap">
-              <p>{hoverText}</p>
-            </div>
+            <span className="hover-wrap">
+              {hoverText}
+            </span>
           )}
         </p>
       </div>

@@ -1,5 +1,5 @@
 declare type User = {
-  id: number;
+  _id: number;
   email: string;
   isBlocked: boolean;
   lastSeen: Date;

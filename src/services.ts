@@ -10,7 +10,7 @@ export const signIn = async (
 ) => {
   try {
     dispatch({ type: "START_LOADING" });
-    const res = await fetch(`${BACKEND_URL}/api/login`, {
+    const res = await fetch(`${BACKEND_URL}/api/v1/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -42,7 +42,7 @@ export const signUp = async (
 ) => {
   try {
     dispatch({ type: "START_LOADING" });
-    const res = await fetch(`${BACKEND_URL}/api/register`, {
+    const res = await fetch(`${BACKEND_URL}/api/v1/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +73,7 @@ export const getUsers = async (
   try {
     dispatch({ type: "START_LOADING" });
 
-    const res = await fetch(`${BACKEND_URL}/api/users`, {
+    const res = await fetch(`${BACKEND_URL}/api/v1/dashboard/getUsers`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -84,7 +84,7 @@ export const getUsers = async (
     if (res.ok) {
       const json = await res.json();
       setUsers(json);
-    } else if (res.status === 401) {
+    } else if (res.status === 403) {
       localStorage.removeItem("token");
       toast.error("Unauthorized. Please log in again.");
     } else {
@@ -109,7 +109,7 @@ export const handleAction = async (
   const token = localStorage.getItem("token");
   try {
     dispatch({ type: "START_LOADING" });
-    const res = await fetch(`${BACKEND_URL}/api/${action}`, {
+    const res = await fetch(`${BACKEND_URL}/api/v1${action}`, {
       method,
       headers: {
         Authorization: `Bearer ${token}`,
