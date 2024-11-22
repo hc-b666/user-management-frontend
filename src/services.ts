@@ -28,7 +28,7 @@ export const signIn = async (
       console.log(`error: ${res}`);
     }
   } catch (err) {
-    toast.error("Something went wrong. Try again later.");
+    toast.error(`Something went wrong. Try again later. ${err}`);
     console.log(err);
   } finally {
     dispatch({ type: "STOP_LOADING" });
