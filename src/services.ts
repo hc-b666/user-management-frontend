@@ -54,6 +54,8 @@ export const signUp = async (
     if (res.ok) {
       toast.success("Registered successfully");
       navigate("/auth/signin");
+    } else if (res.status === 409) {
+      toast.error(json.err);
     } else {
       toast.error(json);
       console.log(`error: ${json}`);
