@@ -12,6 +12,7 @@ interface DashboardDesignProps {
   handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
   users: User[];
   checkedUsers: string[];
+  unCheckedUsers: string[];
   refetchUsers: () => void;
   handleSelectAll: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -23,6 +24,7 @@ export function DashboardDesign(props: DashboardDesignProps) {
     handleSearch,
     users,
     checkedUsers,
+    unCheckedUsers,
     refetchUsers,
     handleSelectAll,
   } = props;
@@ -52,7 +54,7 @@ export function DashboardDesign(props: DashboardDesignProps) {
               handleAction(
                 "/dashboard/unblockUsers",
                 "PUT",
-                { userIds: checkedUsers },
+                { userIds: unCheckedUsers },
                 dispatch,
                 refetchUsers
               )

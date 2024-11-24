@@ -10,6 +10,7 @@ export function Dashboard() {
   const [originalUsers, setOriginalUsers] = useState<User[]>([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [checkedUsers, setCheckedUsers] = useState<string[]>([]);
+  const [unCheckedUsers, setUnCheckedUsers] = useState<string[]>([]);
 
   const refetchUsers = async () => {
     await getUsers(setUsers, dispatch);
@@ -17,7 +18,9 @@ export function Dashboard() {
   
     setUsers((fetchedUsers) => {
       const blockedUsers = fetchedUsers.filter((u) => u.isBlocked).map((u) => u._id);
+      const unBlockedUsers = fetchedUsers.filter((u) => !u.isBlocked).map((u) => u._id);
       setCheckedUsers(blockedUsers);
+      setUnCheckedUsers(unBlockedUsers);
       return fetchedUsers;
     });
   };
@@ -60,22 +63,30 @@ export function Dashboard() {
   };
 
   const handleCheck = (id: string) => {
-    setCheckedUsers((prev) => {
-      const isChecked = prev.includes(id);
+    setCheckedUsers((prevCheckedUsers) => {
+      const isChecked = prevCheckedUsers.includes(id);
+      
       if (isChecked) {
-        return prev.filter((userId) => userId !== id);
+        setUnCheckedUsers((prevUnCheckedUsers) => [...prevUnCheckedUsers, id]);
+        return prevCheckedUsers.filter((userId) => userId !== id);
       } else {
-        return [...prev, id];
+        setUnCheckedUsers((prevUnCheckedUsers) =>
+          prevUnCheckedUsers.filter((userId) => userId !== id)
+        );
+        return [...prevCheckedUsers, id];
       }
     });
   };
+  
 
   const handleSelectAll = () => {
     if (checkedUsers.length === users.length) {
       setCheckedUsers([]);
+      setUnCheckedUsers(users.map((u) => u._id));
     } else {
       const allUserIds = users.map((u) => u._id);
       setCheckedUsers(allUserIds);
+      setUnCheckedUsers([]);
     }
   };
 
@@ -86,6 +97,7 @@ export function Dashboard() {
       handleSearch={handleSearch}
       users={users}
       checkedUsers={checkedUsers}
+      unCheckedUsers={unCheckedUsers}
       refetchUsers={refetchUsers}
       handleSelectAll={handleSelectAll}
     />
