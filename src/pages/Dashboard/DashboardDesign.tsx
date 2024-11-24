@@ -8,10 +8,10 @@ import { useLoading } from "@/contexts/LoadingContext";
 
 interface DashboardDesignProps {
   handleSortLastSeen: () => void;
-  handleCheck: (id: number) => void;
+  handleCheck: (id: string) => void;
   handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
   users: User[];
-  checkedUsers: number[];
+  checkedUsers: string[];
   refetchUsers: () => void;
   handleSelectAll: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -27,8 +27,6 @@ export function DashboardDesign(props: DashboardDesignProps) {
     handleSelectAll,
   } = props;
   const { dispatch } = useLoading();
-
-  console.log(checkedUsers);
 
   return (
     <div className="dashboard-page">

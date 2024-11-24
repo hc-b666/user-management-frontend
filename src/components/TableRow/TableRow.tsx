@@ -4,17 +4,17 @@ import { TableRowDesign } from "./TableRowDesign";
 
 interface TableRowProps {
   user: User;
-  handleCheck: (id: number) => void;
-  checkedUsers: number[];
+  handleCheck: (id: string) => void;
+  checkedUsers: string[];
 }
 
 export function TableRow({ user, handleCheck, checkedUsers }: TableRowProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const [checkState, setCheckState] = useState(user.isBlocked || checkedUsers.includes(user._id));
+  const [checkState, setCheckState] = useState(checkedUsers.includes(user._id));
 
   useEffect(() => {
-    setCheckState(checkedUsers.includes(user._id) ? !user.isBlocked : user.isBlocked);
-  }, [user.isBlocked, checkedUsers, user._id]);
+    setCheckState(checkedUsers.includes(user._id));
+  }, [checkedUsers]);
 
   const lastSeen = calculateDiff(new Date(user.lastSeen));
   const hoverText = getDate(new Date(user.lastSeen));

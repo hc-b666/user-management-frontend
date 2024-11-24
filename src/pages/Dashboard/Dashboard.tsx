@@ -9,12 +9,17 @@ export function Dashboard() {
   const [users, setUsers] = useState<User[]>([]);
   const [originalUsers, setOriginalUsers] = useState<User[]>([]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [checkedUsers, setCheckedUsers] = useState<number[]>([]);
+  const [checkedUsers, setCheckedUsers] = useState<string[]>([]);
 
-  const refetchUsers = () => {
-    getUsers(setUsers, dispatch);
-    getUsers(setOriginalUsers, dispatch);
-    setCheckedUsers([]);
+  const refetchUsers = async () => {
+    await getUsers(setUsers, dispatch);
+    await getUsers(setOriginalUsers, dispatch);
+  
+    setUsers((fetchedUsers) => {
+      const blockedUsers = fetchedUsers.filter((u) => u.isBlocked).map((u) => u._id);
+      setCheckedUsers(blockedUsers);
+      return fetchedUsers;
+    });
   };
 
   useEffect(() => {
@@ -54,7 +59,7 @@ export function Dashboard() {
     setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
   };
 
-  const handleCheck = (id: number) => {
+  const handleCheck = (id: string) => {
     setCheckedUsers((prev) => {
       const isChecked = prev.includes(id);
       if (isChecked) {
@@ -69,7 +74,8 @@ export function Dashboard() {
     if (checkedUsers.length === users.length) {
       setCheckedUsers([]);
     } else {
-      setCheckedUsers(users.map(u => u._id));
+      const allUserIds = users.map((u) => u._id);
+      setCheckedUsers(allUserIds);
     }
   };
 
